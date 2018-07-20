@@ -1,7 +1,7 @@
 # scrcpy (v1.2)
 
 This application provides display and control of Android devices connected on
-USB (or [over TCP/IP][article-tcpip]). It does not require any _root_ access.
+USB or over TCP/IP. It does not require any _root_ access.
 It works on _GNU/Linux_, _Windows_ and _MacOS_.
 
 ![screenshot](assets/screenshot-debian-600.jpg)
@@ -383,3 +383,26 @@ Read the [developers page].
 
 [article-intro]: https://blog.rom1v.com/2018/03/introducing-scrcpy/
 [article-tcpip]: https://www.genymotion.com/blog/open-source-project-scrcpy-now-works-wirelessly/
+
+## How to run scrcpy wirelessly?
+### Here are the steps:
+1. Connect the device to the same Wi-Fi as your computer
+2. Get your device IP address (in Settings → About phone → Status)
+3. Enable adb over TCP/IP on your device: `adb tcpip 5555`
+4. Connect to your device: `adb connect DEVICE_IP:5555` (replace `DEVICE_IP`)
+5. Unplug your device
+6. Run scrcpy as usual
+
+### To switch back to USB mode: `adb usb`.
+
+As expected, the performances are not the same as over USB.
+
+The default scrcpy bit-rate is 8Mbps, which is probably too much for a Wi-Fi connection. Depending on the use case, decreasing the bit-rate and the resolution may be a good compromise:
+
+`scrcpy --bit-rate 2M --max-size 800`
+For people in a hurry:
+
+`scrcpy -b2M -m800`
+Note that while it now works over TCP/IP, this is not an optimal solution for streaming a video wirelessly, since the raw stream is still sent over TCP, where a packet loss is very bad for latency, due to [head-of-line blocking]. But it’s better than nothing!
+[head-of-line blocking]: https://en.wikipedia.org/wiki/Head-of-line_blocking
+
